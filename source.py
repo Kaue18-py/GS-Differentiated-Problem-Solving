@@ -25,3 +25,27 @@ horas = np.arange(7, 20)          # 7h ate 19h
 x = horas - 7                     # horas desde as 7h
 tokens = np.array([5.2, 15.9, 24.3, 26.1, 23.2, 19.4, 15.6,
                    9.1, 6.2, 3.8, 6.7, 12.1, 24.8])  # mil tokens/h
+
+# ---------------------------------------------------------------- ajuste (grau 3)
+coef_bruto = np.polyfit(x, tokens, 3)
+a, b, c, d = np.round(coef_bruto, 3)   # coeficientes arredondados usados no relatorio
+r = np.poly1d([a, b, c, d])
+r1 = r.deriv()       # r'(x)
+r2 = r.deriv(2)      # r''(x)
+R = r.integ()        # primitiva
+
+
+def hora(xv):
+    """Converte x (horas desde as 7h) em texto de horario, ex.: 2.98 -> '9h59'."""
+    total_min = round((7 + xv) * 60)
+    return f"{total_min // 60}h{total_min % 60:02d}"
+
+
+previsto = r(x)
+ss_res = np.sum((tokens - previsto) ** 2)
+ss_tot = np.sum((tokens - tokens.mean()) ** 2)
+r_quadrado = 1 - ss_res / ss_tot
+
+print("Modelo ajustado:")
+print(f"r(x) = {a}x^3 + ({b})x^2 + {c}x + {d}   [mil tokens/h]")
+print(f"R^2 = {r_quadrado:.4f}\n")
