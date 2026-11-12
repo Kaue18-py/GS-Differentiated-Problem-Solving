@@ -82,3 +82,25 @@ print(f"\nItem 4 - limite do modelo de adocao U(n) = {L}(1 - e^(-{k}n))")
 for n in (1, 7, 14, 30, 60):
     print(f"  n = {n:>2} dias: U = {L * (1 - math.exp(-k * n)):.2f} mil tokens/dia")
 print(f"  lim n->inf U(n) = {L} mil tokens/dia")
+
+# ---------------------------------------------------------------- grafico
+xs = np.linspace(0, 12, 400)
+fig, ax = plt.subplots(figsize=(8, 4.2), dpi=160)
+ax.plot(xs + 7, r(xs), color="#185FA5", lw=2, label="modelo r(x)")
+ax.fill_between(xs + 7, r(xs), color="#185FA5", alpha=0.10, label="integral (tokens do dia)")
+ax.scatter(horas, tokens, color="#D85A30", zorder=3, s=22, label="dados simulados")
+for xc in criticos:
+    ax.scatter(xc + 7, r(xc), color="black", zorder=4, s=40)
+    rotulo = "máximo" if r2(xc) < 0 else "mínimo"
+    ax.annotate(f"{rotulo}\n{hora(xc)}: {br(r(xc), 1)}", (xc + 7, r(xc)),
+                textcoords="offset points", xytext=(0, 12 if r2(xc) < 0 else -30),
+                ha="center", fontsize=8)
+ax.set_xlabel("hora do dia")
+ax.set_ylabel("mil tokens por hora")
+ax.set_xticks(range(7, 20))
+ax.set_ylim(0, 32)
+ax.grid(alpha=0.25)
+ax.legend(fontsize=8, loc="upper center", ncol=3, frameon=False)
+fig.tight_layout()
+fig.savefig("grafico_tokens.png")
+print("\nGrafico salvo em grafico_tokens.png")
