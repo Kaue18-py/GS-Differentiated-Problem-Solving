@@ -104,3 +104,33 @@ ax.legend(fontsize=8, loc="upper center", ncol=3, frameon=False)
 fig.tight_layout()
 fig.savefig("grafico_tokens.png")
 print("\nGrafico salvo em grafico_tokens.png")
+
+# ---------------------------------------------------------------- item 5: regra de alerta
+# Resultado escolhido: a INTEGRAL (consumo esperado de um dia tipico).
+# Pouca conversa com a assistente e sinal de isolamento ou mal-estar.
+# Regra: se o consumo do dia ficar abaixo de 50% do esperado, o painel
+# da familia mostra um alerta.
+FRACAO_ALERTA = 0.5
+limiar_alerta = FRACAO_ALERTA * integral
+
+
+def verificar_alerta(consumo_dia):
+    """Retorna a mensagem que aparece no painel da familia para o consumo do dia."""
+    if consumo_dia < limiar_alerta:
+        return (f"ALERTA: uso de {br(consumo_dia, 1)} mil tokens hoje, abaixo de "
+                f"{br(limiar_alerta, 1)} mil. Vale ligar para ver se esta tudo bem.")
+    return f"OK: uso de {br(consumo_dia, 1)} mil tokens hoje, dentro do esperado."
+
+
+print(f"\nItem 5 - regra de alerta: limiar = {FRACAO_ALERTA:.0%} da integral "
+      f"= {limiar_alerta:.1f} mil tokens/dia")
+for exemplo in (170.0, 60.0):
+    print(f"  consumo {exemplo:.1f} -> {verificar_alerta(exemplo)}")
+
+# Limitacao: o modelo e um polinomio de grau 3, entao lim x->inf r(x) = +inf.
+# Fora do intervalo 7h-19h ele preve uso crescendo sem parar, o que nao faz
+# sentido (o idoso dorme). So vale dentro do intervalo dos dados.
+print("\nLimitacao - fora do intervalo dos dados o modelo explode:")
+for xv in (12, 14, 16):
+    print(f"  r({xv}) = {r(xv):.1f} mil tokens/h ({hora(xv)})")
+print("  lim x->inf r(x) = +inf  (coeficiente de x^3 positivo)")
