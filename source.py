@@ -67,3 +67,9 @@ for xc in criticos:
     tipo = "MAXIMO local" if r2(xc) < 0 else "MINIMO local"
     print(f"  x = {xc:.3f} ({hora(xc)}): r = {r(xc):.3f} mil tokens/h, "
           f"r'' = {r2(xc):.3f} -> {tipo}")
+
+# ---------------------------------------------------------------- item 3: integral
+integral = R(12) - R(0)
+print(f"\nItem 3 - integral de 0 a 12: {integral:.3f} mil tokens no dia")
+print(f"  (media: {integral / 12:.3f} mil tokens por hora)")
+print(f"  conferencia com trapezios nos dados: {np.trapezoid(tokens, x):.3f} mil tokens")
