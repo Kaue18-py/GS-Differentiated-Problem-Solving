@@ -59,3 +59,11 @@ for xv in (1, 6, 10):
     print(f"  {hora(xv)} (x={xv}): r'({xv}) = {v:.3f}")
     print(f"    -> As {hora(xv)} o uso de tokens {sentido} com uma velocidade de "
           f"{br(abs(v))} mil tokens/h por hora.")
+
+# ---------------------------------------------------------------- item 2: pontos criticos
+print("\nItem 2 - pontos criticos (r'(x) = 0)")
+criticos = sorted(xc.real for xc in r1.roots if abs(xc.imag) < 1e-9)
+for xc in criticos:
+    tipo = "MAXIMO local" if r2(xc) < 0 else "MINIMO local"
+    print(f"  x = {xc:.3f} ({hora(xc)}): r = {r(xc):.3f} mil tokens/h, "
+          f"r'' = {r2(xc):.3f} -> {tipo}")
