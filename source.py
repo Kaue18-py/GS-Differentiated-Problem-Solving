@@ -73,3 +73,12 @@ integral = R(12) - R(0)
 print(f"\nItem 3 - integral de 0 a 12: {integral:.3f} mil tokens no dia")
 print(f"  (media: {integral / 12:.3f} mil tokens por hora)")
 print(f"  conferencia com trapezios nos dados: {np.trapezoid(tokens, x):.3f} mil tokens")
+
+# ---------------------------------------------------------------- item 4: limite
+# Adocao ao longo dos dias: U(n) = L * (1 - e^(-k n)), L = consumo de um dia tipico
+k = 0.3
+L = round(integral, 1)
+print(f"\nItem 4 - limite do modelo de adocao U(n) = {L}(1 - e^(-{k}n))")
+for n in (1, 7, 14, 30, 60):
+    print(f"  n = {n:>2} dias: U = {L * (1 - math.exp(-k * n)):.2f} mil tokens/dia")
+print(f"  lim n->inf U(n) = {L} mil tokens/dia")
