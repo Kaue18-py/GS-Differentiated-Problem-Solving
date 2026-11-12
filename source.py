@@ -49,3 +49,13 @@ r_quadrado = 1 - ss_res / ss_tot
 print("Modelo ajustado:")
 print(f"r(x) = {a}x^3 + ({b})x^2 + {c}x + {d}   [mil tokens/h]")
 print(f"R^2 = {r_quadrado:.4f}\n")
+
+# ---------------------------------------------------------------- item 1: derivada em 3 pontos
+# Unidade de r'(x): (mil tokens/h) por hora
+print("Item 1 - derivada em 3 pontos  [mil tokens/h por hora]")
+for xv in (1, 6, 10):
+    v = r1(xv)
+    sentido = "sobe" if v > 0 else "cai"
+    print(f"  {hora(xv)} (x={xv}): r'({xv}) = {v:.3f}")
+    print(f"    -> As {hora(xv)} o uso de tokens {sentido} com uma velocidade de "
+          f"{br(abs(v))} mil tokens/h por hora.")
