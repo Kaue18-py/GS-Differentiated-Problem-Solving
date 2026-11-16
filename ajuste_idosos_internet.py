@@ -59,7 +59,25 @@ print("     o grau 2 se ajusta bem E faz sentido (crescimento que desacelera).\n
 # ------------------------------------------------------------------ modelo escolhido: grau 2
 a, b, c = np.round(np.polyfit(t, p_dados, 2), 4)
 p = np.poly1d([a, b, c])        # p(t)  [% de idosos na internet]
+p1 = p.deriv()                  # p'(t) [pontos percentuais por ano]
+p2 = p.deriv(2)                 # p''(t)
 
 print("Modelo ajustado:")
 print(f"  p(t) = {fmt(a, 4)}t^2 + {fmt(b, 4)}t + {fmt(c, 4)}   [%]")
 print(f"  R^2 = {fmt(r2(p), 4)}\n")
+
+# ------------------------------------------------------------------ item 1: derivada (taxa de variacao)
+print("Item 1 - Derivada em 3 pontos: p'(t) = "
+      f"{fmt(2 * a, 4)}t + {fmt(b, 4)}  [pontos percentuais por ano]")
+for tv in (1, 5, 8):
+    print(f"  {ano(tv)} (t={tv}): p = {fmt(p(tv))}%   p'({tv}) = {fmt(p1(tv))} p.p./ano")
+print("  -> o crescimento continua positivo, mas cada vez mais lento.\n")
+
+# ------------------------------------------------------------------ item 2: ponto critico (extremo)
+t_crit = -b / (2 * a)            # p'(t) = 0  ->  2at + b = 0
+tipo = "MAXIMO" if p2(t_crit) < 0 else "MINIMO"
+print("Item 2 - Ponto critico (p'(t) = 0):")
+print(f"  2*({fmt(a, 4)})t + {fmt(b, 4)} = 0  ->  t = {fmt(t_crit, 3)}  (meados de {ano(int(t_crit))})")
+print(f"  p({fmt(t_crit, 3)}) = {fmt(p(t_crit))}%   p'' = {fmt(p2(t_crit), 4)} < 0  ->  {tipo}")
+print("  -> o modelo preve que o uso entre idosos para de crescer em ~84%.")
+print("     Depois disso a parabola desce, o que nao e realista: o modelo vale ate ~2031.\n")
