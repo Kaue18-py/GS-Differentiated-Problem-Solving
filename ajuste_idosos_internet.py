@@ -16,6 +16,15 @@ fica de fora. Nenhum dado foi inventado.
 
 Convencao do enunciado: 2018 = Ano 1, 2019 = Ano 2, ...  (t = ano - 2017)
 
+------------------------------------------------------------------ HIPOTESES (declaradas)
+- Consumo medio: 2000 tokens/dia por idoso (teste com o Gemini gratuito),
+  divididos em 1200 de entrada + 800 de saida.
+- Preco: gemini-3.5-flash-lite, US$ 0,30 por 1M tokens de entrada e
+  US$ 2,50 por 1M de saida (tabela oficial Google AI Studio, nov/2026).
+- Populacao de 60+: 34,1 milhoes, considerada constante
+  (IBGE 2023: 22,5 milhoes de idosos usuarios = 66%).
+- Fatia de mercado do app: 1% dos idosos que usam internet.
+
 Como rodar:  python ajuste_idosos_internet.py
 Precisa de:  numpy  (pip install -r requirements.txt)
 """
@@ -26,6 +35,17 @@ import numpy as np
 anos = np.array([2018, 2019, 2021, 2022, 2023, 2024, 2025])
 t = anos - 2017                                   # Ano 1 = 2018
 p_dados = np.array([38.7, 44.8, 57.5, 62.1, 66.0, 69.8, 74.5])   # % de idosos na internet
+
+# ------------------------------------------------------------------ hipoteses de custo
+TOKENS_ENTRADA_DIA = 1200
+TOKENS_SAIDA_DIA = 800
+PRECO_ENTRADA = 0.30 / 1_000_000                  # US$ por token
+PRECO_SAIDA = 2.50 / 1_000_000                    # US$ por token
+POP_60_MAIS = 34_100_000
+FATIA_MERCADO = 0.01
+
+custo_usuario_dia = TOKENS_ENTRADA_DIA * PRECO_ENTRADA + TOKENS_SAIDA_DIA * PRECO_SAIDA
+custo_usuario_ano = custo_usuario_dia * 365
 
 
 def ano(tv):
@@ -61,6 +81,7 @@ a, b, c = np.round(np.polyfit(t, p_dados, 2), 4)
 p = np.poly1d([a, b, c])        # p(t)  [% de idosos na internet]
 p1 = p.deriv()                  # p'(t) [pontos percentuais por ano]
 p2 = p.deriv(2)                 # p''(t)
+P = p.integ()                   # primitiva de p
 
 print("Modelo ajustado:")
 print(f"  p(t) = {fmt(a, 4)}t^2 + {fmt(b, 4)}t + {fmt(c, 4)}   [%]")
@@ -81,3 +102,15 @@ print(f"  2*({fmt(a, 4)})t + {fmt(b, 4)} = 0  ->  t = {fmt(t_crit, 3)}  (meados 
 print(f"  p({fmt(t_crit, 3)}) = {fmt(p(t_crit))}%   p'' = {fmt(p2(t_crit), 4)} < 0  ->  {tipo}")
 print("  -> o modelo preve que o uso entre idosos para de crescer em ~84%.")
 print("     Depois disso a parabola desce, o que nao e realista: o modelo vale ate ~2031.\n")
+
+# ------------------------------------------------------------------ item 3: integral (custo acumulado)
+# C(t) = custo anual de tokens do app (US$/ano)
+k = POP_60_MAIS * FATIA_MERCADO * custo_usuario_ano / 100   # US$ por ponto percentual
+t_ini, t_fim = 9, 14                                        # 2026 ate 2031 (5 anos)
+custo_acumulado = k * (P(t_fim) - P(t_ini))
+print("Item 3 - Integral (custo acumulado de tokens):")
+print(f"  custo por idoso: US$ {fmt(custo_usuario_dia, 5)}/dia = US$ {fmt(custo_usuario_ano)}/ano")
+print(f"  C(t) = {fmt(k)} * p(t)   [US$/ano]")
+print(f"  usuarios do app em 2026: {fmt(POP_60_MAIS * FATIA_MERCADO * p(9) / 100, 0)}")
+print(f"  integral de C(t) de t={t_ini} ({ano(t_ini)}) a t={t_fim} ({ano(t_fim)}) = "
+      f"US$ {fmt(custo_acumulado)}\n")
