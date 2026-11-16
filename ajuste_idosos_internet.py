@@ -42,3 +42,24 @@ print("Dados reais (IBGE - PNAD Continua TIC):")
 for an, tv, pv in zip(anos, t, p_dados):
     print(f"  {an} (t={tv}): {fmt(pv, 1)}% dos idosos usam internet")
 print()
+
+# ------------------------------------------------------------------ comparacao de modelos
+def r2(modelo):
+    prev = modelo(t)
+    return 1 - np.sum((p_dados - prev) ** 2) / np.sum((p_dados - p_dados.mean()) ** 2)
+
+
+print("Comparacao de modelos (mesmo que FitPoly(list, n) no GeoGebra):")
+for n in (1, 2, 3):
+    m = np.poly1d(np.polyfit(t, p_dados, n))
+    print(f"  grau {n}: R^2 = {fmt(r2(m), 4)}   previsao 2030 (t=13): {fmt(m(13), 1)}%")
+print("  -> grau 1 passa de 100% por volta de 2030 e grau 3 tambem dispara;")
+print("     o grau 2 se ajusta bem E faz sentido (crescimento que desacelera).\n")
+
+# ------------------------------------------------------------------ modelo escolhido: grau 2
+a, b, c = np.round(np.polyfit(t, p_dados, 2), 4)
+p = np.poly1d([a, b, c])        # p(t)  [% de idosos na internet]
+
+print("Modelo ajustado:")
+print(f"  p(t) = {fmt(a, 4)}t^2 + {fmt(b, 4)}t + {fmt(c, 4)}   [%]")
+print(f"  R^2 = {fmt(r2(p), 4)}\n")
