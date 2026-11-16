@@ -24,6 +24,7 @@ Convencao do enunciado: 2018 = Ano 1, 2019 = Ano 2, ...  (t = ano - 2017)
 - Populacao de 60+: 34,1 milhoes, considerada constante
   (IBGE 2023: 22,5 milhoes de idosos usuarios = 66%).
 - Fatia de mercado do app: 1% dos idosos que usam internet.
+- Custo fixo de infraestrutura: US$ 6.000 por ano (servidor etc.).
 
 Como rodar:  python ajuste_idosos_internet.py
 Precisa de:  numpy  (pip install -r requirements.txt)
@@ -43,6 +44,7 @@ PRECO_ENTRADA = 0.30 / 1_000_000                  # US$ por token
 PRECO_SAIDA = 2.50 / 1_000_000                    # US$ por token
 POP_60_MAIS = 34_100_000
 FATIA_MERCADO = 0.01
+CUSTO_FIXO_ANO = 6000.0                           # US$/ano
 
 custo_usuario_dia = TOKENS_ENTRADA_DIA * PRECO_ENTRADA + TOKENS_SAIDA_DIA * PRECO_SAIDA
 custo_usuario_ano = custo_usuario_dia * 365
@@ -114,3 +116,13 @@ print(f"  C(t) = {fmt(k)} * p(t)   [US$/ano]")
 print(f"  usuarios do app em 2026: {fmt(POP_60_MAIS * FATIA_MERCADO * p(9) / 100, 0)}")
 print(f"  integral de C(t) de t={t_ini} ({ano(t_ini)}) a t={t_fim} ({ano(t_fim)}) = "
       f"US$ {fmt(custo_acumulado)}\n")
+
+# ------------------------------------------------------------------ item 4: limite (custo medio por usuario)
+# CM(N) = (custo fixo + custo de tokens de N usuarios) / N
+print("Item 4 - Limite do custo medio por usuario:")
+print("  CM(N) = (CUSTO_FIXO + c*N) / N = CUSTO_FIXO/N + c")
+for N in (100, 1_000, 10_000, 100_000, 1_000_000):
+    cm = (CUSTO_FIXO_ANO + custo_usuario_ano * N) / N
+    print(f"  N = {fmt(N, 0):>9}: CM = US$ {fmt(cm, 4)}/ano")
+print(f"  lim N->inf CM(N) = c = US$ {fmt(custo_usuario_ano, 4)} por idoso por ano")
+print("  -> com muitos usuarios, o custo fixo se dilui e sobra so o custo dos tokens.")
