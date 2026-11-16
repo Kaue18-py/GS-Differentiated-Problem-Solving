@@ -27,10 +27,11 @@ Convencao do enunciado: 2018 = Ano 1, 2019 = Ano 2, ...  (t = ano - 2017)
 - Custo fixo de infraestrutura: US$ 6.000 por ano (servidor etc.).
 
 Como rodar:  python ajuste_idosos_internet.py
-Precisa de:  numpy  (pip install -r requirements.txt)
+Precisa de:  numpy e matplotlib  (pip install -r requirements.txt)
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 # ------------------------------------------------------------------ dados reais (IBGE)
 anos = np.array([2018, 2019, 2021, 2022, 2023, 2024, 2025])
@@ -126,3 +127,39 @@ for N in (100, 1_000, 10_000, 100_000, 1_000_000):
     print(f"  N = {fmt(N, 0):>9}: CM = US$ {fmt(cm, 4)}/ano")
 print(f"  lim N->inf CM(N) = c = US$ {fmt(custo_usuario_ano, 4)} por idoso por ano")
 print("  -> com muitos usuarios, o custo fixo se dilui e sobra so o custo dos tokens.")
+
+# ------------------------------------------------------------------ graficos
+ts = np.linspace(1, 15, 300)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4.5), dpi=150)
+
+reta = np.poly1d(np.polyfit(t, p_dados, 1))
+ax1.scatter(anos, p_dados, color="#1f4e79", zorder=3, label="Dados reais (IBGE)")
+ax1.plot(ts + 2017, p(ts), color="#c0504d", lw=2, label="Modelo p(t) (grau 2)")
+ax1.plot(ts + 2017, reta(ts), color="gray", ls="--", lw=1, label="Reta (grau 1), comparação")
+ax1.scatter(t_crit + 2017, p(t_crit), color="black", zorder=4)
+ax1.annotate(f"Máximo: {fmt(p(t_crit), 1)}%\n(meados de {ano(int(t_crit))})",
+             (t_crit + 2017, p(t_crit)), textcoords="offset points", xytext=(0, 12),
+             ha="center", fontsize=8)
+ax1.axhline(100, color="gray", lw=0.8)
+ax1.set_title("Idosos (60+) que usam internet no Brasil")
+ax1.set_xlabel("Ano")
+ax1.set_ylabel("% dos idosos")
+ax1.set_ylim(0, 110)
+ax1.grid(alpha=0.3)
+ax1.legend(fontsize=8, loc="lower right")
+
+tc = np.linspace(t_ini, t_fim, 200)
+tp = np.linspace(8, 15, 200)                      # o app so existe a partir de agora (2025+)
+ax2.plot(tp + 2017, k * p(tp) / 1000, color="#c0504d", lw=2, label="C(t) = custo anual de tokens")
+ax2.fill_between(tc + 2017, k * p(tc) / 1000, alpha=0.2, color="#c0504d",
+                 label=f"Integral {ano(t_ini)}–{ano(t_fim)}: US$ {fmt(custo_acumulado / 1000, 0)} mil")
+ax2.set_title("Custo de tokens do app (1% dos idosos conectados)")
+ax2.set_xlabel("Ano")
+ax2.set_ylabel("US$ mil por ano")
+ax2.set_ylim(0, 300)
+ax2.grid(alpha=0.3)
+ax2.legend(fontsize=8, loc="lower right")
+
+fig.tight_layout()
+fig.savefig("grafico_idosos_internet.png")
+print("\nGrafico salvo em grafico_idosos_internet.png")
