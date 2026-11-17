@@ -28,7 +28,7 @@ As fontes de cada ano estão em [geogebra_comandos.md](geogebra_comandos.md).
 |---|---|
 | Derivada | crescimento de 6,84 p.p./ano (2018), 4,80 (2022) e 3,27 (2025) |
 | Ponto crítico | máximo de 84,5% em meados de 2031 |
-| Integral | custo acumulado de tokens 2026–2031 ≈ US$ 1,2 milhão |
+| Integral | custo acumulado de tokens no período dos dados (2018–2025) ≈ US$ 1,2 milhão; previsão 2026–2031 também ≈ US$ 1,2 milhão |
 | Limite | custo médio por usuário tende a US$ 0,86/ano |
 
 ## Estrutura
