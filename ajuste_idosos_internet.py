@@ -101,14 +101,19 @@ print("  -> o modelo preve que o uso entre idosos para de crescer em ~84%.")
 print("     Depois disso a parabola desce, o que nao e realista: o modelo vale ate ~2031.\n")
 
 k = POP_60_MAIS * FATIA_MERCADO * custo_usuario_ano / 100
-t_ini, t_fim = 9, 14
+t_ini, t_fim = 1, 8
 custo_acumulado = k * (P(t_fim) - P(t_ini))
+t_ini_prev, t_fim_prev = 9, 14
+custo_previsto = k * (P(t_fim_prev) - P(t_ini_prev))
 print("Item 3 - Integral (custo acumulado de tokens):")
 print(f"  custo por idoso: US$ {fmt(custo_usuario_dia, 5)}/dia = US$ {fmt(custo_usuario_ano)}/ano")
 print(f"  C(t) = {fmt(k)} * p(t)   [US$/ano]")
-print(f"  usuarios do app em 2026: {fmt(POP_60_MAIS * FATIA_MERCADO * p(9) / 100, 0)}")
 print(f"  integral de C(t) de t={t_ini} ({ano(t_ini)}) a t={t_fim} ({ano(t_fim)}) = "
-      f"US$ {fmt(custo_acumulado)}\n")
+      f"US$ {fmt(custo_acumulado)}")
+print("  -> custo de tokens que o app teria tido se atendesse 1% dos idosos conectados")
+print("     durante todo o periodo dos dados.")
+print(f"  previsao extra: integral de t={t_ini_prev} ({ano(t_ini_prev)}) a t={t_fim_prev} "
+      f"({ano(t_fim_prev)}) = US$ {fmt(custo_previsto)}\n")
 
 print("Item 4 - Limite do custo medio por usuario:")
 print("  CM(N) = (CUSTO_FIXO + c*N) / N = CUSTO_FIXO/N + c")
@@ -138,10 +143,12 @@ ax1.grid(alpha=0.3)
 ax1.legend(fontsize=8, loc="lower right")
 
 tc = np.linspace(t_ini, t_fim, 200)
-tp = np.linspace(8, 15, 200)
-ax2.plot(tp + 2017, k * p(tp) / 1000, color="#c0504d", lw=2, label="C(t) = custo anual de tokens")
-ax2.fill_between(tc + 2017, k * p(tc) / 1000, alpha=0.2, color="#c0504d",
-                 label=f"Integral {ano(t_ini)}–{ano(t_fim)}: US$ {fmt(custo_acumulado / 1000, 0)} mil")
+tf = np.linspace(t_ini_prev, t_fim_prev, 200)
+ax2.plot(ts + 2017, k * p(ts) / 1000, color="#c0504d", lw=2, label="C(t) = custo anual de tokens")
+ax2.fill_between(tc + 2017, k * p(tc) / 1000, alpha=0.25, color="#1f4e79",
+                 label=f"Integral {ano(t_ini)}–{ano(t_fim)} (dados): US$ {fmt(custo_acumulado / 1000, 0)} mil")
+ax2.fill_between(tf + 2017, k * p(tf) / 1000, alpha=0.15, color="#c0504d", hatch="//",
+                 label=f"Previsão {ano(t_ini_prev)}–{ano(t_fim_prev)}: US$ {fmt(custo_previsto / 1000, 0)} mil")
 ax2.set_title("Custo de tokens do app (1% dos idosos conectados)")
 ax2.set_xlabel("Ano")
 ax2.set_ylabel("US$ mil por ano")

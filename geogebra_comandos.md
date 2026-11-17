@@ -38,7 +38,8 @@ p'(1)                                  # 2018: ≈ 6.84 p.p./ano
 p'(5)                                  # 2022: ≈ 4.80 p.p./ano
 p'(8)                                  # 2025: ≈ 3.27 p.p./ano
 Extremum(p, 1, 20)                     # máximo: (14.41, 84.47) -> meados de 2031
-Integral(2937.37 p(x), 9, 14)          # custo acumulado 2026-2031: ≈ US$ 1.200.981
+Integral(2937.37 p(x), 1, 8)           # custo acumulado 2018-2025 (intervalo dos dados): ≈ US$ 1.200.413
+Integral(2937.37 p(x), 9, 14)          # previsão extra 2026-2031: ≈ US$ 1.200.981
 Limit((6000 + 0.8614x) / x, ∞)         # custo médio por usuário: 0.8614
 ```
 
