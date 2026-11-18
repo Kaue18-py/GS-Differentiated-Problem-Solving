@@ -35,8 +35,8 @@ e por isso o grau 2 é o que faz mais sentido.
 ```
 p'(x)                                  # derivada: -0.5096x + 7.3456
 p'(1)                                  # 2018: ≈ 6.84 p.p./ano
+p'(5)                                  # 2022: ≈ 4.80 p.p./ano
 p'(8)                                  # 2025: ≈ 3.27 p.p./ano
-p'(16)                                 # 2033: ≈ -0.81 p.p./ano (negativa: depois do máximo, cai)
 Extremum(p, 1, 20)                     # máximo: (14.41, 84.47) -> meados de 2031
 Integral(2937.37 p(x), 1, 8)           # custo acumulado 2018-2025 (intervalo dos dados): ≈ US$ 1.200.413
 Integral(2937.37 p(x), 9, 14)          # previsão extra 2026-2031: ≈ US$ 1.200.981
