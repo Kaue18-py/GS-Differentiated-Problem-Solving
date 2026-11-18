@@ -95,10 +95,11 @@ print(f"Modelo: p(t) = {br(a, 4)}t^2 + {br(b, 4)}t + {br(c, 4)}")
 print(f"R^2 = {br(r_quadrado([c, b, a]), 4)}\n")
 
 print("Item 1 - derivada em 3 pontos (p.p. por ano)")
-for x in (1, 5, 8):
+for x in (1, 8, 16):
     h = 0.0001
     taxa_media = (p(x + h) - p(x)) / h
-    print(f"  {x + 2017}: p'({x}) = {br(dp(x))}   (pela definicao: {br(taxa_media)})")
+    sentido = "cresce" if dp(x) > 0 else "cai"
+    print(f"  {x + 2017}: p'({x}) = {br(dp(x))}   (pela definicao: {br(taxa_media)})  -> {sentido}")
 
 t_critico = -b / (2 * a)
 print("\nItem 2 - ponto critico")
